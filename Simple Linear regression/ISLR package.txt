@@ -1,0 +1,32 @@
+# Install and load the required packages
+install.packages("ISLR")
+install.packages("caret")
+library(ISLR)
+library(caret)
+
+# Load the Default dataset from ISLR package
+data(Default)
+head(Default)
+
+# Convert the "student" variable into a binary numeric variable
+Default$student <- ifelse(Default$student == "Yes", 1, 0)
+
+# Split the data into training and testing sets
+set.seed(123)
+train_idx <- sample(1:nrow(Default), 0.7 * nrow(Default))
+train_data <- Default[train_idx, ]
+test_data <- Default[-train_idx, ]
+
+# Fit the generalized logistic regression model
+model <- glm(default ~ student + income + balance, data = train_data, family = "binomial")
+summary(model)
+
+# Make predictions on the testing set
+predicted_probs <- predict(model, newdata = test_data, type = "response")
+predicted_classes <- ifelse(predicted_probs > 0.5, "Yes", "No")
+
+# Create confusion matrix
+actual_classes <- factor(test_data$default, levels = c("No", "Yes"))
+predicted_classes <- factor(predicted_classes, levels = c("No", "Yes"))
+cm <- confusionMatrix(predicted_classes, actual_classes)
+print(cm)

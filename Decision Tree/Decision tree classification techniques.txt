@@ -1,0 +1,6 @@
+library("party")
+print(head(readingSkills))
+str(iris)
+iris_ctree <- ctree(Species ~ Sepal.Width + Sepal.Length + Petal.Length + Petal.Width, data = iris)
+print(iris_ctree)
+plot(iris_ctree)
